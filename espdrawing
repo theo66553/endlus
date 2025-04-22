@@ -540,33 +540,34 @@ function esp:update()
             end
 
             -- weapon
-            drawing.weapon.Visible = esp[flag .. 'weapon'][1]
-            drawing.weapon_outline.Visible = esp.outlines and drawing.weapon.Visible
-            
-            if drawing.weapon.Visible then
-                -- Get the held item/tool name via function
-                local toolName = sustainability.functions:get_tool_name(model) or "N/A"
-                drawing.weapon.Text = LOWER(toolName)
-            
-                -- Style and layout
-                drawing.weapon.Font = Drawing.Fonts[esp.font]
-                drawing.weapon.Size = esp.textsize
-                drawing.weapon.Color = esp[flag .. 'weapon'][2]
-                drawing.weapon.Transparency = transparency
-                drawing.weapon.Position = esp:floorvector(
-                    NEWVEC2(
-                        smallestX + (biggestX - smallestX) / 2 - (drawing.weapon.TextBounds.X / 2),
-                        biggestY + 4
-                    )
-                )
-            
-                -- Outline copy
-                drawing.weapon_outline.Text = drawing.weapon.Text
-                drawing.weapon_outline.Font = drawing.weapon.Font
-                drawing.weapon_outline.Size = drawing.weapon.Size
-                drawing.weapon_outline.Position = drawing.weapon.Position + NEWVEC2(1, 1)
-                drawing.weapon_outline.Transparency = transparency
-          end
+	drawing.weapon.Visible = esp[flag .. 'weapon'][1]
+	drawing.weapon_outline.Visible = esp.outlines and drawing.weapon.Visible
+	
+	if drawing.weapon.Visible then
+	    -- Auto-detect held tool
+	    local tool = character:FindFirstChildOfClass("Tool")
+	    local toolName = tool and LOWER(tool.Name) or "N/A"
+	
+	    -- Set weapon text
+	    drawing.weapon.Text = toolName
+	    drawing.weapon.Font = Drawing.Fonts[esp.font]
+	    drawing.weapon.Size = esp.textsize
+	    drawing.weapon.Color = esp[flag .. 'weapon'][2]
+	    drawing.weapon.Transparency = transparency
+	    drawing.weapon.Position = esp:floorvector(
+	        NEWVEC2(
+	            smallestX + (biggestX - smallestX) / 2 - (drawing.weapon.TextBounds.X / 2),
+	            biggestY + 4
+	        )
+	    )
+	
+	    -- Outline settings
+	    drawing.weapon_outline.Text = toolName
+	    drawing.weapon_outline.Font = drawing.weapon.Font
+	    drawing.weapon_outline.Size = drawing.weapon.Size
+	    drawing.weapon_outline.Position = drawing.weapon.Position + NEWVEC2(1, 1)
+	    drawing.weapon_outline.Transparency = transparency
+	end
     end
 end
 
