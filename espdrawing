@@ -540,16 +540,24 @@ function esp:update()
             end
 
             -- weapon
+            -- weapon
 	drawing.weapon.Visible = esp[flag .. 'weapon'][1]
 	drawing.weapon_outline.Visible = esp.outlines and drawing.weapon.Visible
 	
 	if drawing.weapon.Visible then
-	    -- Auto-detect held tool
-	    local tool = character:FindFirstChildOfClass("Tool")
-	    local toolName = tool and LOWER(tool.Name) or "N/A"
+	    -- Custom logic to get equipped weapon/tool name
+	    local toolName = "none"
+	    for _, value in pairs(character:GetChildren()) do
+	        if value.Name ~= "HolsterModel" and value:IsA("Model") and value.Name ~= "Hair" and
+	            (value:FindFirstChild("Detail") or value:FindFirstChild("Main") or value:FindFirstChild("Handle") or 
+	             value:FindFirstChild("Attachments") or value:FindFirstChild("ArrowAttach") or value:FindFirstChild("Attach")) and
+	            value.PrimaryPart then
+	                toolName = value.Name
+	                break
+	        end
+	    end
 	
-	    -- Set weapon text
-	    drawing.weapon.Text = toolName
+	    drawing.weapon.Text = LOWER(toolName)
 	    drawing.weapon.Font = Drawing.Fonts[esp.font]
 	    drawing.weapon.Size = esp.textsize
 	    drawing.weapon.Color = esp[flag .. 'weapon'][2]
@@ -561,8 +569,8 @@ function esp:update()
 	        )
 	    )
 	
-	    -- Outline settings
-	    drawing.weapon_outline.Text = toolName
+	    -- Outline setup
+	    drawing.weapon_outline.Text = drawing.weapon.Text
 	    drawing.weapon_outline.Font = drawing.weapon.Font
 	    drawing.weapon_outline.Size = drawing.weapon.Size
 	    drawing.weapon_outline.Position = drawing.weapon.Position + NEWVEC2(1, 1)
